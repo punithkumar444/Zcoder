@@ -48,10 +48,21 @@ const QuestionsList: React.FC = () => {
             >
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">{q.title}</h2>
-                <span className={`text-sm px-2 py-1 rounded bg-$
-                  {q.difficulty === 'Easy' ? 'green' : q.difficulty === 'Medium' ? 'yellow' : 'red'}-100 text-$
-                  {q.difficulty === 'Easy' ? 'green' : q.difficulty === 'Medium' ? 'yellow' : 'red'}-800`}
-                >
+                <span
+                    className={`text-sm px-2 py-1 rounded bg-${
+                      q.difficulty === 'Easy'
+                        ? 'green'
+                        : q.difficulty === 'Medium'
+                        ? 'yellow'
+                        : 'red'
+                    }-100 text-${
+                      q.difficulty === 'Easy'
+                        ? 'green'
+                        : q.difficulty === 'Medium'
+                        ? 'yellow'
+                        : 'red'
+                    }-800`}
+                  >
                   {q.difficulty}
                 </span>
               </div>

@@ -121,6 +121,23 @@ router.get('/:questionId/accepted', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+// GET /api/v1/submissions/mine
+router.get('/mine', authMiddleware, async (req, res) => {
+  try {
+    // get distinct question IDs where user has submissions
+    const questionIds = await Submission.distinct('questionId', { userId: req.userId });
+
+    // get question details for those IDs
+    const questions = await Question.find({ _id: { $in: questionIds } }).select('_id title difficulty topic');
+
+    res.json({ questions });
+  } catch (err) {
+    console.error('Error fetching user submission questions:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 
 
 
