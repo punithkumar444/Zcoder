@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import MonacoEditor from "@monaco-editor/react";
-import DiscussionSection from "../components/DiscussionSection";
 
 type TestCase = {
   input: string;
@@ -33,7 +32,7 @@ const QuestionPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [code, setCode] = useState<string>("");
   const [language, setLanguage] = useState<string>("cpp");
-  const [showDiscussion, setShowDiscussion] = useState(false);
+
   useEffect(() => {
     if (!questionId) return;
 
@@ -78,7 +77,7 @@ const QuestionPage: React.FC = () => {
     setSubmitting(false);
   }
 };
-  const firstname = localStorage.getItem("firstname") || "Anonymous";
+
   if (loading) {
     return <div className="p-6">Loading question...</div>;
   }
@@ -86,6 +85,7 @@ const QuestionPage: React.FC = () => {
   if (!question) {
     return <div className="p-6 text-red-600">Question not found.</div>;
   }
+
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)]">
       {/* Left Panel - Question Info */}
@@ -125,21 +125,6 @@ const QuestionPage: React.FC = () => {
             </div>
           </div>
         )}
-        <div className="mt-6">
-          <button
-            onClick={() => setShowDiscussion((prev) => !prev)}
-            className="bg-gray-800 text-white px-4 py-2 rounded"
-          >
-            {showDiscussion ? "Hide Discussion" : "Show Discussion"}
-          </button>
-
-          {showDiscussion && (
-            <div className="mt-4">
-              <DiscussionSection questionId={question._id} username={firstname} />
-            </div>
-          )}
-        </div>
-
       </div>
 
       {/* Right Panel - Monaco Editor */}

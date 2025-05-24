@@ -32,6 +32,7 @@ const SignUp: React.FC = () => {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("firstname", data.firstName); // or however you get it
         await fetchUser(); // Updates context so navbar gets updated
         navigate("/questions");
       } else {

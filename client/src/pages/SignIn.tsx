@@ -27,9 +27,11 @@ const SignIn: React.FC = () => {
       });
 
       const data = await res.json();
+      console.log("Signin API response:", data);
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("firstname", data.firstName); // or however you get it
         await fetchUser(); // Update context and navbar
         navigate("/questions");
       } else {

@@ -82,7 +82,27 @@ const submissionSchema = new mongoose.Schema({
   timestamps: true  // adds createdAt and updatedAt automatically
 });
 
+const commentSchema = new mongoose.Schema({
+  questionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Question',
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
+const Comment = mongoose.model('Comment', commentSchema);
 const Question = mongoose.model('Question', questionSchema);
 const User = mongoose.model('User', userSchema);
 const Submission = mongoose.model('Submission', submissionSchema);
@@ -90,5 +110,6 @@ const Submission = mongoose.model('Submission', submissionSchema);
 module.exports = {
 	User,
   Question,
-  Submission
+  Submission,
+  Comment
 };
