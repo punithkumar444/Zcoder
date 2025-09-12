@@ -13,7 +13,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
-
+// added routes
 // Socket logic
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
