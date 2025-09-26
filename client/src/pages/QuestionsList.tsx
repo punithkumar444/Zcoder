@@ -25,7 +25,8 @@ const QuestionsList: React.FC = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch('/api/v1/questions');
+        const u = `${import.meta.env.VITE_API_BASE_URL}/api/v1/questions`
+        const res = await fetch(u);
         const data = await res.json();
         setQuestions(data.questions);
       } catch (err) {
