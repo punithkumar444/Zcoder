@@ -8,48 +8,108 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const  { authMiddleware } = require("../middleware");
 
+// const signupBody = zod.object({
+//     username: zod.string().email(),
+// 	firstName: zod.string(),
+// 	lastName: zod.string(),
+// 	password: zod.string()
+// })
 const signupBody = zod.object({
-    username: zod.string().email(),
-	firstName: zod.string(),
-	lastName: zod.string(),
-	password: zod.string()
-})
+    username: zod.string().email({ message: "Invalid email address" }),
+    firstName: zod.string().min(1, { message: "First name is required" }),
+    lastName: zod.string().min(1, { message: "Last name is required" }),
+    password: zod.string().min(6, { message: "Password must be at least 6 characters long" })
+});
+
+
+// router.post("/signup", async (req, res) => {
+//     const { success } = signupBody.safeParse(req.body)
+//     if (!success) {
+//         return res.status(411).json({
+//             message: "Email already taken / Incorrect inputs"
+//         })
+//     }
+
+//     const existingUser = await User.findOne({
+//         username: req.body.username
+//     })
+
+//     if (existingUser) {
+//         return res.status(411).json({
+//             message: "Email already taken/Incorrect inputs"
+//         })
+//     }
+
+//     const user = await User.create({
+//         username: req.body.username,
+//         password: req.body.password,
+//         firstName: req.body.firstName,
+//         lastName: req.body.lastName,
+//     })
+//     const userId = user._id;
+//     const token = jwt.sign({
+//         userId
+//     }, JWT_SECRET);
+
+//     res.json({
+//         message: "User created successfully",
+//         token: token,
+//         firstName:user.firstName
+//     })
+// })
 
 router.post("/signup", async (req, res) => {
-    const { success } = signupBody.safeParse(req.body)
-    if (!success) {
-        return res.status(411).json({
-            message: "Email already taken / Incorrect inputs"
-        })
+    // 1. Validate the input
+    const parseResult = signupBody.safeParse(req.body);
+    if (!parseResult.success) {
+        return res.status(400).json({ // Use 400 for bad request
+            message: "Incorrect inputs",
+            errors: parseResult.error.flatten().fieldErrors, // Send detailed errors back
+        });
     }
 
-    const existingUser = await User.findOne({
-        username: req.body.username
-    })
+    try {
+        // 2. Check if the user already exists
+        const existingUser = await User.findOne({
+            username: req.body.username
+        });
 
-    if (existingUser) {
-        return res.status(411).json({
-            message: "Email already taken/Incorrect inputs"
-        })
+        if (existingUser) {
+            return res.status(409).json({ // Use 409 for conflict
+                message: "An account with this email already exists."
+            });
+        }
+
+        // 3. Hash the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+        // 4. Create the new user with the hashed password
+        const user = await User.create({
+            username: req.body.username,
+            password: hashedPassword, // Store the hashed password
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+        });
+
+        // 5. Create a JWT token for the new user
+        const userId = user._id;
+        const token = jwt.sign({ userId }, JWT_SECRET);
+
+        // 6. Send a success response
+        res.status(201).json({ // Use 201 for resource created
+            message: "User created successfully",
+            token: token,
+            firstName: user.firstName
+        });
+
+    } catch (error) {
+        console.error("Signup Error:", error); // Log the actual error on the server
+        return res.status(500).json({
+            message: "An internal server error occurred. Please try again later."
+        });
     }
-
-    const user = await User.create({
-        username: req.body.username,
-        password: req.body.password,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-    })
-    const userId = user._id;
-    const token = jwt.sign({
-        userId
-    }, JWT_SECRET);
-
-    res.json({
-        message: "User created successfully",
-        token: token,
-        firstName:user.firstName
-    })
-})
+});
 
 
 const signinBody = zod.object({
