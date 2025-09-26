@@ -59,14 +59,14 @@ const Profile = () => {
         <button onClick={handleUpdate} className="bg-blue-600 text-white px-4 py-2 rounded">Update</button>
       </div>
 
-      {/* <div className="mt-6">
+      <div className="mt-6">
         <h3 className="text-lg font-semibold mb-2">Recently Solved Questions</h3>
         <ul className="list-disc ml-6">
           {recentSolved.map((q, i) => (
             <li key={i}>{q}</li>
           ))}
         </ul>
-      </div> */}
+      </div>
     </div>
   );
 };
