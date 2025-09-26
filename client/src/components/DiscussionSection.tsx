@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 
-const socket = io("http://localhost:3000"); // ✅ Update to your backend if deployed
+const socket = io("https://zcoder-backend-j1yn.onrender.com"); // ✅ Update to your backend if deployed
 
 type Comment = {
   username: string;
