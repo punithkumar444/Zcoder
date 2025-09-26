@@ -20,9 +20,9 @@ const SignUp: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+    const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/v1/user/signup`;
     try {
-      const res = await fetch("/api/v1/user/signup", {
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
